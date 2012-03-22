@@ -1,32 +1,47 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2012-03-20T20:29:28
+# Project created by QtCreator 2012-03-22T21:20:48
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += opengl
 
-TARGET = SceneView
-TEMPLATE = app
+TARGET = YViewer
+TEMPLATE = lib
 
-
-SOURCES += main.cpp\
-        mainwindow.cpp
-
-HEADERS  += mainwindow.h
-
-FORMS    += mainwindow.ui
+DEFINES += YVIEWER_LIBRARY
 
 INCLUDEPATH += $$PWD/../include/OSG
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../YViewer/release/ -lYViewer
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../YViewer/debug/ -lYViewer
-else:symbian: LIBS += -lYViewer
-else:unix: LIBS += -L$$OUT_PWD/../YViewer/ -lYViewer
+SOURCES += \
+    YViewer.cpp \
+    YOSGAdapterWidget.cpp \
+    YOSGViewerQT.cpp
 
-INCLUDEPATH += $$PWD/../YViewer
-DEPENDPATH += $$PWD/../YViewer
+HEADERS +=\
+        YViewer_global.h \
+    YViewer.h \
+    YOSGViewerQT.h \
+    YOSGAdapterWidget.h
 
+symbian {
+    MMP_RULES += EXPORTUNFROZEN
+    TARGET.UID3 = 0xE524EBFF
+    TARGET.CAPABILITY = 
+    TARGET.EPOCALLOWDLLDATA = 1
+    addFiles.sources = YViewer.dll
+    addFiles.path = !:/sys/bin
+    DEPLOYMENT += addFiles
+}
+
+unix:!symbian {
+    maemo5 {
+        target.path = /opt/usr/lib
+    } else {
+        target.path = /usr/lib
+    }
+    INSTALLS += target
+}
 
 LIBS += $$PWD/../lib/libOpenThreads.dll.a \
         $$PWD/../lib/libosg.dll.a \
@@ -45,3 +60,6 @@ LIBS += $$PWD/../lib/libOpenThreads.dll.a \
         $$PWD/../lib/libosgViewer.dll.a \
         $$PWD/../lib/libosgVolume.dll.a \
         $$PWD/../lib/libosgWidget.dll.a
+
+FORMS += \
+    YViewer.ui
